@@ -60,3 +60,5 @@ BC/Intermediate/*
 
 # Cache files for the editor to use
 BC/DerivedDataCache/*
+
+BC/BC.VC.db
