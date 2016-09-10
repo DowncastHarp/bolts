@@ -25,11 +25,11 @@ public:
         return SpawnVolumeBox;
     }
 
-    UFUNCTION(BlueprintPure, Category = "Enemy")
+    UFUNCTION(BlueprintPure, Category = "Spawn Volume Parameters")
     FVector GetRandomSpawnLocations();
 
 protected:
-    UPROPERTY(EditAnywhere, Category = "Enemy")
+    UPROPERTY(EditAnywhere, Category = "Spawn Volume Parameters")
     TSubclassOf<class AEnemyCharacterSpawn> WhatToSpawn;
 
     FTimerHandle SpawnTimer;
