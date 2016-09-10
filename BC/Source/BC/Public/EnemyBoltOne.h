@@ -5,9 +5,6 @@
 #include "EnemyCharacterSpawn.h"
 #include "EnemyBoltOne.generated.h"
 
-/**
- *
- */
 UCLASS()
 class BC_API AEnemyBoltOne : public AEnemyCharacterSpawn
 {
