@@ -8,39 +8,43 @@
 UCLASS()
 class BC_API AEnemySpawnVolume : public AActor
 {
-	GENERATED_BODY()
-	
-public:	
-	// Sets default values for this actor's properties
-	AEnemySpawnVolume();
+    GENERATED_BODY()
 
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-	
-	// Called every frame
-	virtual void Tick( float DeltaSeconds ) override;
+public:
+    // Sets default values for this actor's properties
+    AEnemySpawnVolume();
 
-	FORCEINLINE class UBoxComponent* GetSpawnVolumeBox() const { return SpawnVolumeBox; }
+    // Called when the game starts or when spawned
+    virtual void BeginPlay() override;
 
-	UFUNCTION(BlueprintPure, Category = "Enemy")
-	FVector GetRandomSpawnLocations();
-	
+    // Called every frame
+    virtual void Tick( float DeltaSeconds ) override;
+
+    FORCEINLINE class UBoxComponent* GetSpawnVolumeBox() const
+    {
+        return SpawnVolumeBox;
+    }
+
+    UFUNCTION(BlueprintPure, Category = "Enemy")
+    FVector GetRandomSpawnLocations();
+
 protected:
-	UPROPERTY(EditAnywhere, Category = "Enemy")
-	TSubclassOf<class AEnemyCharacterSpawn> WhatToSpawn;
+    UPROPERTY(EditAnywhere, Category = "Enemy")
+    TSubclassOf<class AEnemyCharacterSpawn> WhatToSpawn;
 
-	FTimerHandle SpawnTimer;
+    FTimerHandle SpawnTimer;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, category = "Enemy")
-	float SpawnDelayLimitLow;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, category = "Spawn Volume Parameters")
+    float SpawnDelayLimitLow;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, category = "Enemy")
-	float SpawnDelayLimitHigh;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, category = "Spawn Volume Parameters")
+    float SpawnDelayLimitHigh;
 private:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Enemy", meta = (AllowPrivateAccess = "true"))
-	class UBoxComponent* SpawnVolumeBox;
-	
-	void SpawnEnemyBoltOne();
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Spawn Volume Parameters", meta = (AllowPrivateAccess = "true"))
+    class UBoxComponent* SpawnVolumeBox;
 
-	float SpawnDelay; 
+    // Function to spawn the enemy of type EnemyBoltOne
+    void SpawnEnemyBoltOne();
+
+    float SpawnDelay;
 };

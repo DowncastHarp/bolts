@@ -4,71 +4,73 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "EnemySpawnVolume.h"
 #include "EnemyCharacterSpawn.h"
-
+#define ROTATION_FACTOR 360.0f
+#define SPAWN_DELAY_LOW 1.0f
+#define SPAWN_DELAY_HIGH 4.5f
 
 // Sets default values
 AEnemySpawnVolume::AEnemySpawnVolume()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = false;
+    // Character Tick() turned off to improve performance.
+    PrimaryActorTick.bCanEverTick = false;
 
-	SpawnVolumeBox = CreateDefaultSubobject<UBoxComponent>(TEXT("SpawnVolumeBox"));
-	RootComponent = SpawnVolumeBox;
+    SpawnVolumeBox = CreateDefaultSubobject<UBoxComponent>(TEXT("SpawnVolumeBox"));
+    RootComponent = SpawnVolumeBox;
 
-	SpawnDelayLimitLow = 1.0f;
-	SpawnDelayLimitHigh = 4.5f;
-	
+    SpawnDelayLimitLow = SPAWN_DELAY_LOW;
+    SpawnDelayLimitHigh = SPAWN_DELAY_HIGH;
+
 }
 
 // Called when the game starts or when spawned
 void AEnemySpawnVolume::BeginPlay()
 {
-	Super::BeginPlay();
+    Super::BeginPlay();
 
-	SpawnDelay = FMath::FRandRange(SpawnDelayLimitLow, SpawnDelayLimitHigh);
-	GetWorldTimerManager().SetTimer(SpawnTimer, this, &AEnemySpawnVolume::SpawnEnemyBoltOne, SpawnDelay, false);
-	
+    SpawnDelay = FMath::FRandRange(SpawnDelayLimitLow, SpawnDelayLimitHigh);
+    GetWorldTimerManager().SetTimer(SpawnTimer, this, &AEnemySpawnVolume::SpawnEnemyBoltOne, SpawnDelay, false);
+
 }
 
 // Called every frame
 void AEnemySpawnVolume::Tick( float DeltaTime )
 {
-	Super::Tick( DeltaTime );
+    Super::Tick( DeltaTime );
 
 }
 
 FVector AEnemySpawnVolume::GetRandomSpawnLocations()
 {
-	FVector SpawnBoxOrigin = SpawnVolumeBox->Bounds.Origin;
-	FVector SpawnBoxExtent = SpawnVolumeBox->Bounds.BoxExtent;
+    FVector SpawnBoxOrigin = SpawnVolumeBox->Bounds.Origin;
+    FVector SpawnBoxExtent = SpawnVolumeBox->Bounds.BoxExtent;
 
-	return UKismetMathLibrary::RandomPointInBoundingBox(SpawnBoxOrigin, SpawnBoxExtent);
+    // Return a random position in the spawn volume
+    return UKismetMathLibrary::RandomPointInBoundingBox(SpawnBoxOrigin, SpawnBoxExtent);
 }
 
 void AEnemySpawnVolume::SpawnEnemyBoltOne()
 {
-	if (WhatToSpawn != NULL)
-	{
-		UWorld* const World = GetWorld();
+    // Check if we have a valid mesh to spawn
+    if (WhatToSpawn != NULL) {
+        UWorld* const World = GetWorld();
+        //Check if the world is still active/valid
+        if (World) {
+            FActorSpawnParameters SpawnParameters;
 
-		if (World)
-		{
-			FActorSpawnParameters SpawnParameters;
+            SpawnParameters.Owner = this;
+            SpawnParameters.Instigator = Instigator;
 
-			SpawnParameters.Owner = this;
-			SpawnParameters.Instigator = Instigator;
+            FVector Location = GetRandomSpawnLocations();
 
-			FVector Location = GetRandomSpawnLocations();
+            FRotator SpawnRotation;
+            SpawnRotation.Yaw = FMath::FRand() * ROTATION_FACTOR;
+            SpawnRotation.Pitch = FMath::FRand() * ROTATION_FACTOR;
+            SpawnRotation.Roll = FMath::FRand() * ROTATION_FACTOR;
 
-			FRotator SpawnRotation;
-			SpawnRotation.Yaw = FMath::FRand() * 360.0f;
-			SpawnRotation.Pitch = FMath::FRand() * 360.0f;
-			SpawnRotation.Roll = FMath::FRand() * 360.0f;
+            AEnemyCharacterSpawn* const SpawnedEnemy = World->SpawnActor<AEnemyCharacterSpawn>(WhatToSpawn, Location, SpawnRotation, SpawnParameters);
 
-			AEnemyCharacterSpawn* const SpawnedEnemy = World->SpawnActor<AEnemyCharacterSpawn>(WhatToSpawn, Location, SpawnRotation, SpawnParameters);
-
-			SpawnDelay = FMath::FRandRange(SpawnDelayLimitLow, SpawnDelayLimitHigh);
-			GetWorldTimerManager().SetTimer(SpawnTimer, this, &AEnemySpawnVolume::SpawnEnemyBoltOne, SpawnDelay, false);
-		}
-	}
+            SpawnDelay = FMath::FRandRange(SpawnDelayLimitLow, SpawnDelayLimitHigh);
+            GetWorldTimerManager().SetTimer(SpawnTimer, this, &AEnemySpawnVolume::SpawnEnemyBoltOne, SpawnDelay, false);
+        }
+    }
 }

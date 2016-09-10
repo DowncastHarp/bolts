@@ -5,5 +5,5 @@
 
 AEnemyBoltOne::AEnemyBoltOne()
 {
-	GetMesh()->SetSimulatePhysics(true);
+    GetMesh()->SetSimulatePhysics(true);
 }

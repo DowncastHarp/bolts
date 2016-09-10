@@ -8,25 +8,28 @@
 UCLASS()
 class BC_API AEnemyCharacterSpawn : public ACharacter
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
-	AEnemyCharacterSpawn();
+    // Sets default values for this character's properties
+    AEnemyCharacterSpawn();
 
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-	
-	// Called every frame
-	virtual void Tick( float DeltaSeconds ) override;
+    // Called when the game starts or when spawned
+    virtual void BeginPlay() override;
 
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
+    // Called every frame
+    virtual void Tick( float DeltaSeconds ) override;
 
-	/** Returns the enemy mesh */
-	FORCEINLINE class UStaticMeshComponent* GetMesh() const { return EnemyMesh; }
-	
+    // Called to bind functionality to input
+    virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
+
+    /** Returns the enemy mesh */
+    FORCEINLINE class UStaticMeshComponent* GetMesh() const
+    {
+        return EnemyMesh;
+    }
+
 private:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Enemy", meta = (AllowPrivateAccess = "true"))
-	class UStaticMeshComponent* EnemyMesh;
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Enemy", meta = (AllowPrivateAccess = "true"))
+    class UStaticMeshComponent* EnemyMesh;
 };

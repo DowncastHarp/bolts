@@ -6,14 +6,14 @@
 #include "EnemyBoltOne.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class BC_API AEnemyBoltOne : public AEnemyCharacterSpawn
 {
-	GENERATED_BODY()
-	
+    GENERATED_BODY()
+
 public:
-	AEnemyBoltOne();
-	
+    AEnemyBoltOne();
+
 };
