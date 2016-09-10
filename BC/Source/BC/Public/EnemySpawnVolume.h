@@ -30,7 +30,7 @@ public:
 
 protected:
     UPROPERTY(EditAnywhere, Category = "Spawn Volume Parameters")
-    TSubclassOf<class AEnemyCharacterSpawn> WhatToSpawn;
+    TSubclassOf<class AEnemyCharacterSpawn> EnemyToSpawn;
 
     FTimerHandle SpawnTimer;
 

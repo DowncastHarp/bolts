@@ -51,7 +51,7 @@ FVector AEnemySpawnVolume::GetRandomSpawnLocations()
 void AEnemySpawnVolume::SpawnEnemyBoltOne()
 {
     // Check if we have a valid mesh to spawn
-    if (WhatToSpawn != NULL) {
+    if (EnemyToSpawn != NULL) {
         UWorld* const World = GetWorld();
         //Check if the world is still active/valid
         if (World) {
@@ -67,7 +67,7 @@ void AEnemySpawnVolume::SpawnEnemyBoltOne()
             SpawnRotation.Pitch = FMath::FRand() * ROTATION_FACTOR;
             SpawnRotation.Roll = FMath::FRand() * ROTATION_FACTOR;
 
-            AEnemyCharacterSpawn* const SpawnedEnemy = World->SpawnActor<AEnemyCharacterSpawn>(WhatToSpawn, Location, SpawnRotation, SpawnParameters);
+            AEnemyCharacterSpawn* const SpawnedEnemy = World->SpawnActor<AEnemyCharacterSpawn>(EnemyToSpawn, Location, SpawnRotation, SpawnParameters);
 
             SpawnDelay = FMath::FRandRange(SpawnDelayLimitLow, SpawnDelayLimitHigh);
             GetWorldTimerManager().SetTimer(SpawnTimer, this, &AEnemySpawnVolume::SpawnEnemyBoltOne, SpawnDelay, false);
