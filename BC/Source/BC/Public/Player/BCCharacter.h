@@ -8,48 +8,54 @@ class ABCAssaultRifle;
 UCLASS(Blueprintable)
 class ABCCharacter : public ACharacter
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 public:
-	ABCCharacter();
+    ABCCharacter();
 
-  void BeginPlay() override;
+    void BeginPlay() override;
 
-	// Called every frame.
-	virtual void Tick(float DeltaSeconds) override;
+    // Called every frame.
+    virtual void Tick(float DeltaSeconds) override;
 
-	/** Returns TopDownCameraComponent subobject **/
-	FORCEINLINE class UCameraComponent* GetTopDownCameraComponent() const { return TopDownCameraComponent; }
-	/** Returns CameraBoom subobject **/
-	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
+    /** Returns TopDownCameraComponent subobject **/
+    FORCEINLINE class UCameraComponent* GetTopDownCameraComponent() const
+    {
+        return TopDownCameraComponent;
+    }
+    /** Returns CameraBoom subobject **/
+    FORCEINLINE class USpringArmComponent* GetCameraBoom() const
+    {
+        return CameraBoom;
+    }
 
-  float TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
-  void HandleDeath();
+    float TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+    void HandleDeath();
 
-  void OnStartFire();
-  void OnStopFire();
+    void OnStartFire();
+    void OnStopFire();
 
 protected:
-  UPROPERTY(EditAnywhere, Category = "Stats")
-  float Health = 100.0f;
+    UPROPERTY(EditAnywhere, Category = "Stats")
+    float Health = 100.0f;
 
-  UPROPERTY(EditAnywhere, Category = Weapon)
-  TSubclassOf<class ABCAssaultRifle> WeaponClass;
+    UPROPERTY(EditAnywhere, Category = Weapon)
+    TSubclassOf<class ABCAssaultRifle> WeaponClass;
 
 private:
-	/** Top down camera */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	class UCameraComponent* TopDownCameraComponent;
+    /** Top down camera */
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+    class UCameraComponent* TopDownCameraComponent;
 
-	/** Camera boom positioning the camera above the character */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	class USpringArmComponent* CameraBoom;
+    /** Camera boom positioning the camera above the character */
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+    class USpringArmComponent* CameraBoom;
 
-	/** A decal that projects to the cursor location. */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	class UDecalComponent* CursorToWorld;
+    /** A decal that projects to the cursor location. */
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+    class UDecalComponent* CursorToWorld;
 
-  /** The player's equipped weapon. */
-  ABCAssaultRifle* Weapon;
+    /** The player's equipped weapon. */
+    ABCAssaultRifle* Weapon;
 };
 
