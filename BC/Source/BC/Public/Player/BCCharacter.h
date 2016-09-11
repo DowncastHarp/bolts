@@ -3,6 +3,8 @@
 #include "GameFramework/Character.h"
 #include "BCCharacter.generated.h"
 
+class ABCAssaultRifle;
+
 UCLASS(Blueprintable)
 class ABCCharacter : public ACharacter
 {
@@ -10,6 +12,8 @@ class ABCCharacter : public ACharacter
 
 public:
 	ABCCharacter();
+
+  void BeginPlay() override;
 
 	// Called every frame.
 	virtual void Tick(float DeltaSeconds) override;
@@ -19,9 +23,18 @@ public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 
+  float TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+  void HandleDeath();
+
+  void OnStartFire();
+  void OnStopFire();
+
 protected:
   UPROPERTY(EditAnywhere, Category = "Stats")
   float Health = 100.0f;
+
+  UPROPERTY(EditAnywhere, Category = Weapon)
+  TSubclassOf<class ABCAssaultRifle> WeaponClass;
 
 private:
 	/** Top down camera */
@@ -35,5 +48,8 @@ private:
 	/** A decal that projects to the cursor location. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UDecalComponent* CursorToWorld;
+
+  /** The player's equipped weapon. */
+  ABCAssaultRifle* Weapon;
 };
 
