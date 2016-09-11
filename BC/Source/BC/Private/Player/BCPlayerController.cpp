@@ -2,6 +2,7 @@
 
 #include "BC.h"
 #include "BCPlayerController.h"
+#include "BCCharacter.h"
 #include "AI/Navigation/NavigationSystem.h"
 
 ABCPlayerController::ABCPlayerController()
@@ -32,6 +33,9 @@ void ABCPlayerController::SetupInputComponent()
 	// support touch devices 
 	InputComponent->BindTouch(EInputEvent::IE_Pressed, this, &ABCPlayerController::MoveToTouchLocation);
 	InputComponent->BindTouch(EInputEvent::IE_Repeat, this, &ABCPlayerController::MoveToTouchLocation);
+
+  InputComponent->BindAction("Fire", IE_Pressed, this, &ABCPlayerController::OnStartFire);
+  InputComponent->BindAction("Fire", IE_Released, this, &ABCPlayerController::OnStopFire);
 }
 
 void ABCPlayerController::MoveToMouseCursor()
@@ -87,4 +91,18 @@ void ABCPlayerController::OnSetDestinationReleased()
 {
 	// clear flag to indicate we should stop updating the destination
 	bMoveToMouseCursor = false;
+}
+
+void ABCPlayerController::OnStartFire() {
+  APawn* Pawn = GetPawn();
+  if (Pawn) {
+    Cast<ABCCharacter>(Pawn)->OnStartFire();
+  }
+}
+
+void ABCPlayerController::OnStopFire() {
+  APawn* Pawn = GetPawn();
+  if (Pawn) {
+    Cast<ABCCharacter>(Pawn)->OnStopFire();
+  }
 }
