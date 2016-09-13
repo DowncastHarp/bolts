@@ -3,7 +3,7 @@
 #include "GameFramework/Character.h"
 #include "BCCharacter.generated.h"
 
-class ABCAssaultRifle;
+class ABCWeapon;
 
 UCLASS(Blueprintable)
 class ABCCharacter : public ACharacter
@@ -40,7 +40,7 @@ protected:
     float Health = 100.0f;
 
     UPROPERTY(EditAnywhere, Category = Weapon)
-    TSubclassOf<class ABCAssaultRifle> WeaponClass;
+    TSubclassOf<class ABCWeapon> WeaponClass;
 
 private:
     /** Top down camera */
@@ -56,6 +56,6 @@ private:
     class UDecalComponent* CursorToWorld;
 
     /** The player's equipped weapon. */
-    ABCAssaultRifle* Weapon;
+    ABCWeapon* Weapon;
 };
 

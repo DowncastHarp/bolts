@@ -1,12 +1,11 @@
 #pragma once
 
+#include "BCWeapon.h"
 #include "GameFramework/Actor.h"
 #include "BCAssaultRifle.generated.h"
 
-class ABCCharacter;
-
 UCLASS()
-class BC_API ABCAssaultRifle : public AActor
+class BC_API ABCAssaultRifle : public ABCWeapon
 {
     GENERATED_BODY()
 
@@ -20,19 +19,9 @@ public:
     // Called every frame
     virtual void Tick( float DeltaSeconds ) override;
 
-    void OnStartFire();
-    void OnStopFire();
+    virtual void OnStartFire() override;
+    virtual void OnStopFire() override;
 
-    void TraceShot();
-
-    ABCCharacter* GetPlayer()
-    {
-        return Player;
-    }
-    void SetPlayer(ABCCharacter* Player)
-    {
-        this->Player = Player;
-    }
 protected:
     UPROPERTY(EditAnywhere, Category = WeaponStats)
     float FireRate = 0.1f;
@@ -44,6 +33,7 @@ protected:
     float ShotDamage = 10.0f;
 
 private:
-    ABCCharacter* Player;
     FTimerHandle WeaponTimer;
+
+    void TraceShot();
 };
