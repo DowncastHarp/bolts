@@ -2,7 +2,7 @@
 
 #include "BC.h"
 #include "BCCharacter.h"
-#include "Player/Weapons/BCAssaultRifle.h"
+#include "Player/Weapons/BCWeapon.h"
 
 #include "Runtime/CoreUObject/Public/UObject/ConstructorHelpers.h"
 #include "Runtime/Engine/Classes/Components/DecalComponent.h"
@@ -62,7 +62,7 @@ void ABCCharacter::BeginPlay()
             SpawnParams.Owner = this;
             SpawnParams.Instigator = Instigator;
 
-            Weapon = World->SpawnActor<ABCAssaultRifle>(WeaponClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
+            Weapon = World->SpawnActor<ABCWeapon>(WeaponClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
 
             if (Weapon) {
                 Weapon->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
