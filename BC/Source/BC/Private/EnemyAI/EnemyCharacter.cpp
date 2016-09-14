@@ -13,7 +13,7 @@ AEnemyCharacter::AEnemyCharacter()
 // Called when the game starts or when spawned
 void AEnemyCharacter::BeginPlay()
 {
-	Health = Max_Health;
+	Health = MaxHealth;
 	Super::BeginPlay();
 }
 
@@ -26,7 +26,7 @@ void AEnemyCharacter::Tick( float DeltaTime )
 	float const Distance = FVector::Dist(player->GetActorLocation(), GetActorLocation());
 
 	// We need to issue move command only if far enough in order for walk animation to play correctly
-	if (NavSys && (Distance > 120.0f))
+	if (NavSys && (Distance > MinimumDistance))
 	{
 		NavSys->SimpleMoveToLocation(GetController(), player->GetActorLocation());
 	}
@@ -51,11 +51,15 @@ float AEnemyCharacter::TakeDamage(float damage, FDamageEvent const& DamageEvent,
 		Health -= ActualDamage;
 		if (Health <= 0.0f)
 		{
-			//Respawns at {0,0,0}, should be handled by spawn manager.
-			SetActorLocation(FVector(0, 0, 0));
-			Health = Max_Health;
+			HandleDeath();
 		}
 	}
 	return ActualDamage;
 }
 
+void AEnemyCharacter::HandleDeath()
+{
+	//Handle Death of enemy unit
+	SetActorLocation(FVector(0, 0, 0));
+	Health = MaxHealth;
+}

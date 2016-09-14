@@ -17,7 +17,10 @@ class BC_API AEnemyCharacter : public ACharacter
 	float Damage;
 
 	UPROPERTY(EditAnywhere, Category = Damage)
-	float Max_Health;
+	float MaxHealth;
+	
+	UPROPERTY(EditAnywhere, Category = Damage)
+	float MinimumDistance;
 
 public:
 
@@ -29,6 +32,9 @@ public:
 	
 	// Called every frame
 	virtual void Tick( float DeltaSeconds ) override;
+
+	//Handle Death
+	void HandleDeath();
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
