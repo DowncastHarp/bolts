@@ -6,32 +6,33 @@
 UCLASS()
 class ABCPlayerController : public APlayerController
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 public:
-	ABCPlayerController();
+    ABCPlayerController();
 
 protected:
-	/** True if the controlled character should navigate to the mouse cursor. */
-	uint32 bMoveToMouseCursor : 1;
 
-	// Begin PlayerController interface
-	virtual void PlayerTick(float DeltaTime) override;
-	virtual void SetupInputComponent() override;
-	// End PlayerController interface
+    /** Stored rotation values */
+    float storedRotationX;
+    float storedRotationY;
 
-	/** Navigate player to the current mouse cursor location. */
-	void MoveToMouseCursor();
+    // Begin PlayerController interface
+    virtual void PlayerTick(float DeltaTime) override;
+    virtual void SetupInputComponent() override;
+    // End PlayerController interface
 
-	/** Navigate player to the current touch location. */
-	void MoveToTouchLocation(const ETouchIndex::Type FingerIndex, const FVector Location);
-	
-	/** Navigate player to the given world location. */
-	void SetNewMoveDestination(const FVector DestLocation);
+    /** Input handlers for Movement action */
+    void OnMoveForward(float Value);
+    void OnMoveRight(float Value);
 
-	/** Input handlers for SetDestination action. */
-	void OnSetDestinationPressed();
-	void OnSetDestinationReleased();
+    /** Input handlers for Rotation action */
+    void OnRotateX(float Value);
+    void OnRotateY(float Value);
+
+    /** Input handlers for FireWeapon action */
+    void OnBeginFirePrimary();
+    void OnEndFirePrimary();
 };
 
 

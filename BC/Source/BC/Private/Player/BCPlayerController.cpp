@@ -6,85 +6,97 @@
 
 ABCPlayerController::ABCPlayerController()
 {
-	bShowMouseCursor = true;
-	DefaultMouseCursor = EMouseCursor::Crosshairs;
+    bShowMouseCursor = true;
+    DefaultMouseCursor = EMouseCursor::Crosshairs;
 }
 
 void ABCPlayerController::PlayerTick(float DeltaTime)
 {
-	Super::PlayerTick(DeltaTime);
+    Super::PlayerTick(DeltaTime);
 
-	// keep updating the destination every tick while desired
-	if (bMoveToMouseCursor)
-	{
-		MoveToMouseCursor();
-	}
+    // Update Rotation
+    APawn* const Pawn = GetPawn();
+
+    if (Pawn) {
+        FVector rotInput(storedRotationX, storedRotationY, 0.0f);
+        Pawn->SetActorRotation(rotInput.Rotation());
+    }
 }
 
 void ABCPlayerController::SetupInputComponent()
 {
-	// set up gameplay key bindings
-	Super::SetupInputComponent();
+    // set up gameplay key bindings
+    Super::SetupInputComponent();
 
-	InputComponent->BindAction("SetDestination", IE_Pressed, this, &ABCPlayerController::OnSetDestinationPressed);
-	InputComponent->BindAction("SetDestination", IE_Released, this, &ABCPlayerController::OnSetDestinationReleased);
+    // Gamepad Bindings
 
-	// support touch devices 
-	InputComponent->BindTouch(EInputEvent::IE_Pressed, this, &ABCPlayerController::MoveToTouchLocation);
-	InputComponent->BindTouch(EInputEvent::IE_Repeat, this, &ABCPlayerController::MoveToTouchLocation);
+    // Movement Axis Bindings
+    InputComponent->BindAxis("MoveForward", this, &ABCPlayerController::OnMoveForward);
+    InputComponent->BindAxis("MoveRight", this, &ABCPlayerController::OnMoveRight);
+
+    // Rotation Axis Bindings
+    InputComponent->BindAxis("RotationX", this, &ABCPlayerController::OnRotateX);
+    InputComponent->BindAxis("RotationY", this, &ABCPlayerController::OnRotateY);
+
+    // Fire Primary Weapon Button Bindings
+    InputComponent->BindAction("FirePrimaryWeapon", IE_Pressed, this, &ABCPlayerController::OnBeginFirePrimary);
+    InputComponent->BindAction("FirePrimaryWeapon", IE_Released, this, &ABCPlayerController::OnEndFirePrimary);
 }
 
-void ABCPlayerController::MoveToMouseCursor()
+void ABCPlayerController::OnMoveForward(float Value)
 {
-	// Trace to see what is under the mouse cursor
-	FHitResult Hit;
-	GetHitResultUnderCursor(ECC_Visibility, false, Hit);
+    APawn* const Pawn = GetPawn();
 
-	if (Hit.bBlockingHit)
-	{
-		// We hit something, move there
-		SetNewMoveDestination(Hit.ImpactPoint);
-	}
+    if ((Value != 0.0f) && Pawn) {
+        // find out which way is forward
+        FRotator Rotation = GetControlRotation();
+        // Limit pitch when walking or falling
+
+        // add movement in that direction
+        const FVector Direction = FRotationMatrix(Rotation).GetScaledAxis(EAxis::X);
+        Pawn->AddMovementInput(Direction, Value);
+    }
 }
 
-void ABCPlayerController::MoveToTouchLocation(const ETouchIndex::Type FingerIndex, const FVector Location)
+void ABCPlayerController::OnMoveRight(float Value)
 {
-	FVector2D ScreenSpaceLocation(Location);
+    APawn* const Pawn = GetPawn();
 
-	// Trace to see what is under the touch location
-	FHitResult HitResult;
-	GetHitResultAtScreenPosition(ScreenSpaceLocation, CurrentClickTraceChannel, true, HitResult);
-	if (HitResult.bBlockingHit)
-	{
-		// We hit something, move there
-		SetNewMoveDestination(HitResult.ImpactPoint);
-	}
+    if ((Value != 0.0f) && Pawn) {
+        // find out which way is forward
+        FRotator Rotation = GetControlRotation();
+        // Limit pitch when walking or falling
+
+        // add movement in that direction
+        const FVector Direction = FRotationMatrix(Rotation).GetScaledAxis(EAxis::Y);
+        Pawn->AddMovementInput(Direction, Value);
+    }
 }
 
-void ABCPlayerController::SetNewMoveDestination(const FVector DestLocation)
+void ABCPlayerController::OnRotateX(float Value)
 {
-	APawn* const Pawn = GetPawn();
-	if (Pawn)
-	{
-		UNavigationSystem* const NavSys = GetWorld()->GetNavigationSystem();
-		float const Distance = FVector::Dist(DestLocation, Pawn->GetActorLocation());
+    APawn* const Pawn = GetPawn();
 
-		// We need to issue move command only if far enough in order for walk animation to play correctly
-		if (NavSys && (Distance > 120.0f))
-		{
-			NavSys->SimpleMoveToLocation(this, DestLocation);
-		}
-	}
+    if ((Value != 0.0f) && Pawn) {
+        storedRotationX = Value;
+    }
 }
 
-void ABCPlayerController::OnSetDestinationPressed()
+void ABCPlayerController::OnRotateY(float Value)
 {
-	// set flag to keep updating destination until released
-	bMoveToMouseCursor = true;
+    APawn* const Pawn = GetPawn();
+
+    if ((Value != 0.0f) && Pawn) {
+        storedRotationY = Value;
+    }
 }
 
-void ABCPlayerController::OnSetDestinationReleased()
+void ABCPlayerController::OnBeginFirePrimary()
 {
-	// clear flag to indicate we should stop updating the destination
-	bMoveToMouseCursor = false;
+    // TODO: Add FirePrimaryWeapon Begin Functionality
+}
+
+void ABCPlayerController::OnEndFirePrimary()
+{
+    // TODO: Add FirePrimaryWeapon End Functionality
 }
