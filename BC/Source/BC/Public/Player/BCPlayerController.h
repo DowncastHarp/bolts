@@ -12,29 +12,27 @@ public:
     ABCPlayerController();
 
 protected:
-    /** True if the controlled character should navigate to the mouse cursor. */
-    uint32 bMoveToMouseCursor : 1;
+
+    /** Stored rotation values */
+    float storedRotationX;
+    float storedRotationY;
 
     // Begin PlayerController interface
     virtual void PlayerTick(float DeltaTime) override;
     virtual void SetupInputComponent() override;
     // End PlayerController interface
 
-    /** Navigate player to the current mouse cursor location. */
-    void MoveToMouseCursor();
+    /** Input handlers for Movement action */
+    void OnMoveForward(float Value);
+    void OnMoveRight(float Value);
 
-    /** Navigate player to the current touch location. */
-    void MoveToTouchLocation(const ETouchIndex::Type FingerIndex, const FVector Location);
+    /** Input handlers for Rotation action */
+    void OnRotateX(float Value);
+    void OnRotateY(float Value);
 
-    /** Navigate player to the given world location. */
-    void SetNewMoveDestination(const FVector DestLocation);
-
-    /** Input handlers for SetDestination action. */
-    void OnSetDestinationPressed();
-    void OnSetDestinationReleased();
-
-    void OnStartFire();
-    void OnStopFire();
+    /** Input handlers for FireWeapon action */
+    void OnBeginFirePrimary();
+    void OnEndFirePrimary();
 };
 
 
