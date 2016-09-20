@@ -2,6 +2,7 @@
 
 #include "BC.h"
 #include "BCPlayerController.h"
+#include "BCCharacter.h"
 #include "AI/Navigation/NavigationSystem.h"
 
 ABCPlayerController::ABCPlayerController()
@@ -20,7 +21,7 @@ void ABCPlayerController::PlayerTick(float DeltaTime)
     if (Pawn) {
         FVector rotInput(storedRotationX, storedRotationY, 0.0f);
         Pawn->SetActorRotation(rotInput.Rotation());
-    }
+	}
 }
 
 void ABCPlayerController::SetupInputComponent()
@@ -46,7 +47,6 @@ void ABCPlayerController::SetupInputComponent()
 void ABCPlayerController::OnMoveForward(float Value)
 {
     APawn* const Pawn = GetPawn();
-
     if ((Value != 0.0f) && Pawn) {
         // find out which way is forward
         FRotator Rotation = GetControlRotation();
@@ -61,7 +61,6 @@ void ABCPlayerController::OnMoveForward(float Value)
 void ABCPlayerController::OnMoveRight(float Value)
 {
     APawn* const Pawn = GetPawn();
-
     if ((Value != 0.0f) && Pawn) {
         // find out which way is forward
         FRotator Rotation = GetControlRotation();
@@ -76,7 +75,6 @@ void ABCPlayerController::OnMoveRight(float Value)
 void ABCPlayerController::OnRotateX(float Value)
 {
     APawn* const Pawn = GetPawn();
-
     if ((Value != 0.0f) && Pawn) {
         storedRotationX = Value;
     }
@@ -85,7 +83,6 @@ void ABCPlayerController::OnRotateX(float Value)
 void ABCPlayerController::OnRotateY(float Value)
 {
     APawn* const Pawn = GetPawn();
-
     if ((Value != 0.0f) && Pawn) {
         storedRotationY = Value;
     }
@@ -93,10 +90,17 @@ void ABCPlayerController::OnRotateY(float Value)
 
 void ABCPlayerController::OnBeginFirePrimary()
 {
-    // TODO: Add FirePrimaryWeapon Begin Functionality
+    APawn* Pawn = GetPawn();
+    if (Pawn) {
+        Cast<ABCCharacter>(Pawn)->OnBeginFirePrimary();
+    }
 }
 
 void ABCPlayerController::OnEndFirePrimary()
 {
-    // TODO: Add FirePrimaryWeapon End Functionality
+    APawn* Pawn = GetPawn();
+    if (Pawn) {
+        Cast<ABCCharacter>(Pawn)->OnEndFirePrimary();
+    }
 }
+
