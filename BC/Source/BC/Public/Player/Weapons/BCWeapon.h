@@ -21,10 +21,10 @@ public:
     virtual void Tick( float DeltaSeconds ) override;
 
     // Called by the player when the weapon should start firing.
-    virtual void OnStartFire() PURE_VIRTUAL(ABCWeapon::OnStartFire, ;);
+    virtual void OnBeginFire() PURE_VIRTUAL(ABCWeapon::OnBeginFire, ;);
 
     // Called by the player when the weapon should stop firing.
-    virtual void OnStopFire() PURE_VIRTUAL(ABCWeapon::OnStartFire, ;);
+    virtual void OnEndFire() PURE_VIRTUAL(ABCWeapon::OnEndFire, ;);
 
     // Returns the player who owns this weapon.
     ABCCharacter* GetPlayer()

@@ -19,8 +19,8 @@ public:
     // Called every frame
     virtual void Tick( float DeltaSeconds ) override;
 
-    virtual void OnStartFire() override;
-    virtual void OnStopFire() override;
+    virtual void OnBeginFire() override;
+    virtual void OnEndFire() override;
 
 protected:
     UPROPERTY(EditAnywhere, Category = WeaponStats)

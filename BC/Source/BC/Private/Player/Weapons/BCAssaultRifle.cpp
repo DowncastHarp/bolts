@@ -30,12 +30,12 @@ void ABCAssaultRifle::Tick( float DeltaTime )
 
 }
 
-void ABCAssaultRifle::OnStartFire()
+void ABCAssaultRifle::OnBeginFire()
 {
     GetWorldTimerManager().SetTimer(WeaponTimer, this, &ABCAssaultRifle::TraceShot, FireRate, true, -FireRate);
 }
 
-void ABCAssaultRifle::OnStopFire()
+void ABCAssaultRifle::OnEndFire()
 {
     GetWorldTimerManager().ClearTimer(WeaponTimer);
 }
@@ -54,6 +54,6 @@ void ABCAssaultRifle::TraceShot()
     GetWorld()->LineTraceSingleByObjectType(Hit, StartPos, EndPos, FCollisionObjectQueryParams::AllObjects, TraceParams);
     if (Hit.bBlockingHit) {
         // There's no actors to hit right now, so for now draw a debug line.
-        DrawDebugLine(GetWorld(), StartPos, Hit.ImpactPoint, FColor::Cyan, false, 0.5f, 0, 1.5f);
+        DrawDebugLine(GetWorld(), StartPos, Hit.ImpactPoint, FColor::Red, false, 0.5f, 0, 1.5f);
     }
 }

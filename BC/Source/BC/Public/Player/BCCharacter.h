@@ -32,8 +32,8 @@ public:
     float TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
     void HandleDeath();
 
-    void OnStartFire();
-    void OnStopFire();
+    void OnBeginFirePrimary();
+    void OnEndFirePrimary();
 
 protected:
     UPROPERTY(EditAnywhere, Category = "Stats")

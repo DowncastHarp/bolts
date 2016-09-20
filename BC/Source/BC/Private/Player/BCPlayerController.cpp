@@ -15,10 +15,13 @@ void ABCPlayerController::PlayerTick(float DeltaTime)
 {
     Super::PlayerTick(DeltaTime);
 
-    // keep updating the destination every tick while desired
-    if (bMoveToMouseCursor) {
-        MoveToMouseCursor();
-    }
+    // Update Rotation
+    APawn* const Pawn = GetPawn();
+
+    if (Pawn) {
+        FVector rotInput(storedRotationX, storedRotationY, 0.0f);
+        Pawn->SetActorRotation(rotInput.Rotation());
+	}
 }
 
 void ABCPlayerController::SetupInputComponent()
@@ -26,80 +29,78 @@ void ABCPlayerController::SetupInputComponent()
     // set up gameplay key bindings
     Super::SetupInputComponent();
 
-    InputComponent->BindAction("SetDestination", IE_Pressed, this, &ABCPlayerController::OnSetDestinationPressed);
-    InputComponent->BindAction("SetDestination", IE_Released, this, &ABCPlayerController::OnSetDestinationReleased);
+    // Gamepad Bindings
 
-    // support touch devices
-    InputComponent->BindTouch(EInputEvent::IE_Pressed, this, &ABCPlayerController::MoveToTouchLocation);
-    InputComponent->BindTouch(EInputEvent::IE_Repeat, this, &ABCPlayerController::MoveToTouchLocation);
+    // Movement Axis Bindings
+    InputComponent->BindAxis("MoveForward", this, &ABCPlayerController::OnMoveForward);
+    InputComponent->BindAxis("MoveRight", this, &ABCPlayerController::OnMoveRight);
 
-    InputComponent->BindAction("Fire", IE_Pressed, this, &ABCPlayerController::OnStartFire);
-    InputComponent->BindAction("Fire", IE_Released, this, &ABCPlayerController::OnStopFire);
+    // Rotation Axis Bindings
+    InputComponent->BindAxis("RotationX", this, &ABCPlayerController::OnRotateX);
+    InputComponent->BindAxis("RotationY", this, &ABCPlayerController::OnRotateY);
+
+    // Fire Primary Weapon Button Bindings
+    InputComponent->BindAction("FirePrimaryWeapon", IE_Pressed, this, &ABCPlayerController::OnBeginFirePrimary);
+    InputComponent->BindAction("FirePrimaryWeapon", IE_Released, this, &ABCPlayerController::OnEndFirePrimary);
 }
 
-void ABCPlayerController::MoveToMouseCursor()
-{
-    // Trace to see what is under the mouse cursor
-    FHitResult Hit;
-    GetHitResultUnderCursor(ECC_Visibility, false, Hit);
-
-    if (Hit.bBlockingHit) {
-        // We hit something, move there
-        SetNewMoveDestination(Hit.ImpactPoint);
-    }
-}
-
-void ABCPlayerController::MoveToTouchLocation(const ETouchIndex::Type FingerIndex, const FVector Location)
-{
-    FVector2D ScreenSpaceLocation(Location);
-
-    // Trace to see what is under the touch location
-    FHitResult HitResult;
-    GetHitResultAtScreenPosition(ScreenSpaceLocation, CurrentClickTraceChannel, true, HitResult);
-    if (HitResult.bBlockingHit) {
-        // We hit something, move there
-        SetNewMoveDestination(HitResult.ImpactPoint);
-    }
-}
-
-void ABCPlayerController::SetNewMoveDestination(const FVector DestLocation)
+void ABCPlayerController::OnMoveForward(float Value)
 {
     APawn* const Pawn = GetPawn();
-    if (Pawn) {
-        UNavigationSystem* const NavSys = GetWorld()->GetNavigationSystem();
-        float const Distance = FVector::Dist(DestLocation, Pawn->GetActorLocation());
+    if ((Value != 0.0f) && Pawn) {
+        // find out which way is forward
+        FRotator Rotation = GetControlRotation();
+        // Limit pitch when walking or falling
 
-        // We need to issue move command only if far enough in order for walk animation to play correctly
-        if (NavSys && (Distance > 120.0f)) {
-            NavSys->SimpleMoveToLocation(this, DestLocation);
-        }
+        // add movement in that direction
+        const FVector Direction = FRotationMatrix(Rotation).GetScaledAxis(EAxis::X);
+        Pawn->AddMovementInput(Direction, Value);
     }
 }
 
-void ABCPlayerController::OnSetDestinationPressed()
+void ABCPlayerController::OnMoveRight(float Value)
 {
-    // set flag to keep updating destination until released
-    bMoveToMouseCursor = true;
+    APawn* const Pawn = GetPawn();
+    if ((Value != 0.0f) && Pawn) {
+        // find out which way is forward
+        FRotator Rotation = GetControlRotation();
+        // Limit pitch when walking or falling
+
+        // add movement in that direction
+        const FVector Direction = FRotationMatrix(Rotation).GetScaledAxis(EAxis::Y);
+        Pawn->AddMovementInput(Direction, Value);
+    }
 }
 
-void ABCPlayerController::OnSetDestinationReleased()
+void ABCPlayerController::OnRotateX(float Value)
 {
-    // clear flag to indicate we should stop updating the destination
-    bMoveToMouseCursor = false;
+    APawn* const Pawn = GetPawn();
+    if ((Value != 0.0f) && Pawn) {
+        storedRotationX = Value;
+    }
 }
 
-void ABCPlayerController::OnStartFire()
+void ABCPlayerController::OnRotateY(float Value)
+{
+    APawn* const Pawn = GetPawn();
+    if ((Value != 0.0f) && Pawn) {
+        storedRotationY = Value;
+    }
+}
+
+void ABCPlayerController::OnBeginFirePrimary()
 {
     APawn* Pawn = GetPawn();
     if (Pawn) {
-        Cast<ABCCharacter>(Pawn)->OnStartFire();
+        Cast<ABCCharacter>(Pawn)->OnBeginFirePrimary();
     }
 }
 
-void ABCPlayerController::OnStopFire()
+void ABCPlayerController::OnEndFirePrimary()
 {
     APawn* Pawn = GetPawn();
     if (Pawn) {
-        Cast<ABCCharacter>(Pawn)->OnStopFire();
+        Cast<ABCCharacter>(Pawn)->OnEndFirePrimary();
     }
 }
+
